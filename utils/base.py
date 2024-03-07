@@ -15,8 +15,6 @@ class BaseModel(models.Model):
 class GenderTypes(models.TextChoices):
     MALE = "MALE",
     FEMALE = "FEMALE",
-    CUSTOM = "CUSTOM",
-    NOTMENTION = "NOTMENTION",
 
 
 
