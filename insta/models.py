@@ -1,15 +1,16 @@
 from django.db import models
 from utils.base import BaseModel, GenderTypes
-from django.contrib.auth import get_user_model
 from django.core.validators import FileExtensionValidator
 from django.utils import timezone
 from django.db.models import Count
+from ckeditor.fields import RichTextField
+from sorl.thumbnail import ImageField
 
 
 class ProfileManager(models.Manager):
     def is_active(self):
         queryset = self.get_queryset()
-        return  queryset.filter(is_public=True)
+        return queryset.filter(is_public=True)
 
 
 class Profile(BaseModel):
@@ -21,20 +22,19 @@ class Profile(BaseModel):
     bio = models.CharField(max_length=150)
     phone = models.CharField(max_length=12, null=True, blank=True)
 
-    image = models.ImageField(upload_to="img/user/", null=True, blank=True, validators=[FileExtensionValidator(
+    image = ImageField(upload_to="img/user/", null=True, blank=True, validators=[FileExtensionValidator(
         allowed_extensions=[".jpeg", ".img", "png"]
     )])
 
     is_public = models.BooleanField(default=True)
     following = models.ManyToManyField("self", symmetrical=False, related_name="followers", blank=True,)
 
-
     def __str__(self):
         return self.name
 
 
 class Media(BaseModel):
-    image = models.FileField(upload_to="post/", null=True, blank=True, validators=[
+    image = ImageField(upload_to="post/", null=True, blank=True, validators=[
         FileExtensionValidator(allowed_extensions=[
             "IMG", "SVG", "PNG", "JPEG", "wbem", "avi", "mp4"])
     ])
@@ -105,7 +105,7 @@ class District(BaseModel):
 class Post(BaseModel):
     owner = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="owner")
     content = models.ManyToManyField(Media, related_name="post_medias")
-    description = models.TextField(null=True, blank=True)
+    description = RichTextField(null=True, blank=True)
 
     liked_by = models.ManyToManyField(Profile, related_name="liked_post_by", blank=True)
     watched_by = models.ManyToManyField(Profile, related_name="watched_post_by", blank=True)

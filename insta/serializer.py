@@ -40,3 +40,5 @@ class StorySerializer(serializers.ModelSerializer):
         fields = (
             "owner", "owner_image", "story_media", "description","story", "liked_count", "watched_count"
         )
+
+
